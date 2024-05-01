@@ -1,0 +1,14 @@
+{
+  "name": "roninz-admin-cli",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "npm link && roninz-admin-cli"
+  },
+  "bin": {
+    "roninz-admin-cli": "./src/index.ts"
+  },
+  "author": "",
+  "license": "ISC"
+}
