@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 import pck from "../package.json";
-import contact from "./commands/contact";
 import { Command } from "commander";
-import './helpers/log'
+import "./helpers/log";
+import fse from "fs-extra";
+import { join } from "path";
 
 const program = new Command();
 const nodeVer = process.versions.node;
@@ -10,15 +11,29 @@ const nodeVer = process.versions.node;
 const start = async () => {
   console.log("roninz-admin-cli当前版本：", pck.version);
   console.log("当前nodejs版本：", nodeVer);
+  console.log("================================");
 
-  program.version(pck.version); // 设置版本
+  const commandDirs = await fse.readdirSync(join(__dirname, "./commands"));
 
-  program
-    .command(contact.command)
-    .description(contact.description)
-    .action(contact.action);
+  const filePromise: Promise<any>[] = [];
+  commandDirs.forEach((fileName) => {
+    filePromise.push(
+      new Promise((res, rej) => {
+        import(`./commands/${fileName}/index.js`).then((data) => {
+          res(data);
+        });
+      })
+    );
+  });
 
-  program.parse();
+  // 动态加载命令
+  Promise.all(filePromise).then((res) => {
+    res.forEach((data) => {
+      const { command, description, action } = data.default.default;
+      program.command(command).description(description).action(action);
+    });
+    program.parse();
+  });
 };
 
 start();
