@@ -4,10 +4,23 @@ import { join } from "path";
 // @ts-ignore
 import inquirer from "inquirer";
 import { questionList } from "./utils";
+// @ts-ignore
+import ora from "ora";
+import { createProject } from "./utils/createProject";
+import { AnyObject } from "./type";
+
+const spinner = ora("正在创建项目...");
 
 const userQuestion = (projectName: string) => {
-  inquirer.prompt(questionList).then((res) => {
-    console.log(res, "zlzlzl");
+  inquirer.prompt(questionList).then((answers: AnyObject) => {
+    spinner.start();
+    createProject({
+      ...answers,
+      projectName,
+    });
+    setTimeout(() => {
+      spinner.stop();
+    }, 1000);
   });
 };
 

@@ -1,12 +1,4 @@
-// @ts-ignore
-import { Question } from "inquirer";
-
-interface QuestionExtend extends Question {
-  choices?: {
-    name?: string;
-    value?: string;
-  }[];
-}
+import { QuestionExtend } from "../type";
 
 export const questionList: QuestionExtend[] = [
   {

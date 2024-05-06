@@ -4,8 +4,8 @@
   "description": "",
   "main": "src/index.ts",
   "scripts": {
-    "build": "tsc -b",
-    "watch": "tsc -b -w"
+    "build": "node script --build",
+    "watch": "node script --watch"
   },
   "bin": {
     "roninz-admin-cli": "./src/index.js"
@@ -23,6 +23,7 @@
     "commander": "^12.0.0",
     "figlet": "^1.7.0",
     "fs-extra": "^11.2.0",
-    "inquirer": "^8.0.0"
+    "inquirer": "^8.0.0",
+    "ora": "^5.1.0"
   }
 }

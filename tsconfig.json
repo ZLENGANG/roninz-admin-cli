@@ -11,5 +11,6 @@
     "typeRoots": ["./node_modules/@types"],
     "allowSyntheticDefaultImports": true
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "src/commands/create/project_template"]
 }
