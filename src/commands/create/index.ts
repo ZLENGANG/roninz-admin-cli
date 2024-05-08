@@ -26,14 +26,14 @@ const userQuestion = (projectName: string) => {
 
 const action = async (projectName: string) => {
   const cwdPath = process.cwd();
-  const isExist = await fse.existsSync(join(cwdPath, projectName));
-  if (isExist) {
-    console.log(
-      chalk.red(`项目名可能已存在，请更换项目名或者删除文件夹${projectName}`)
-    );
-  } else {
+  // const isExist = await fse.existsSync(join(cwdPath, projectName));
+  // if (isExist) {
+  //   console.log(
+  //     chalk.red(`项目名可能已存在，请更换项目名或者删除文件夹${projectName}`)
+  //   );
+  // } else {
     userQuestion(projectName);
-  }
+  // }
 };
 
 export default {
