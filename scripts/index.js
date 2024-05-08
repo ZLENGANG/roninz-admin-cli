@@ -1,6 +1,5 @@
 const fse = require("fs-extra");
 const cp = require("child_process");
-const copy = require("./copy");
 
 const isExistTemp = fse.existsSync("dist/src/commands/create/project_template");
 const param = process.argv[process.argv.length - 1];
@@ -37,8 +36,13 @@ function build() {
         "src/commands/create/project_template",
         "dist/src/commands/create/project_template"
       );
+
+      await fse.copySync(
+        "src/commands/create/project_template_ts",
+        "dist/src/commands/create/project_template_ts"
+      );
+
       console.log("打包完成");
-      copy();
       resolve();
     }
   });

@@ -5,12 +5,19 @@
     "moduleResolution": "node16",
     "baseUrl": "src",
     "outDir": "dist",
-    "sourceMap": true,
     "noImplicitAny": true,
     "resolveJsonModule": true,
-    "typeRoots": ["./node_modules/@types"],
+    "typeRoots": [
+      "./node_modules/@types"
+    ],
     "allowSyntheticDefaultImports": true
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "src/commands/create/project_template"]
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "src/commands/create/project_template",
+    "src/commands/create/project_template_ts"
+  ]
 }
