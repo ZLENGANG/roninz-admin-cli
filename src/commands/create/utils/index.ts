@@ -1,4 +1,4 @@
-import { QuestionExtend } from "../type";
+import { CliAnswers, AnyObject, QuestionExtend } from "../type";
 
 export const questionList: QuestionExtend[] = [
   {
@@ -16,16 +16,16 @@ export const questionList: QuestionExtend[] = [
   },
   {
     type: "list",
-    name: "language",
+    name: "tempPath",
     message: "请选择开发的语言",
     choices: [
       {
         name: "TypeScript",
-        value: "ts",
+        value: "project_template_ts",
       },
       {
         name: "JavaScript",
-        value: "js",
+        value: "project_template",
       },
     ],
   },
@@ -92,3 +92,17 @@ export const questionList: QuestionExtend[] = [
     default: ["echarts"],
   },
 ];
+
+export const formatAnswers = (answers: CliAnswers) => {
+  const { features, model } = answers;
+
+  features.forEach((key) => {
+    answers[key] = features.includes(key);
+  });
+
+  model.forEach((key) => {
+    answers[key] = model.includes(key);
+  });
+
+  return answers;
+};

@@ -1,11 +1,10 @@
 import { join, extname } from "path";
-import { AnyObject } from "../type";
+import { CliAnswers } from "../type";
 import fse from "fs-extra";
+import { ConvertVue } from "./convertVue";
 
-const tempPath = "project_template";
-
-export const createProject = (answers: AnyObject) => {
-  const files = fse.readdirSync(join(__dirname, `../${tempPath}`), {
+export const createProject = (answers: CliAnswers) => {
+  const files = fse.readdirSync(join(__dirname, `../${answers.tempPath}`), {
     withFileTypes: true,
   });
 
@@ -19,13 +18,13 @@ export const createProject = (answers: AnyObject) => {
       // 在运行目录下增加src文件夹
       fse.ensureDirSync(join(process.cwd(), answers.projectName, "src"));
 
-      const originSrcPath = join(__dirname, `../${tempPath}/src`);
+      const originSrcPath = join(__dirname, `../${answers.tempPath}/src`);
       handleOriginSrcDir(originSrcPath, answers);
     }
   });
 };
 
-async function handleOriginSrcDir(originSrcPath: string, answers: AnyObject) {
+async function handleOriginSrcDir(originSrcPath: string, answers: CliAnswers) {
   const projectName = answers.projectName;
   const originSrcFiles = await fse.readdir(originSrcPath, {
     withFileTypes: true,
@@ -38,20 +37,34 @@ async function handleOriginSrcDir(originSrcPath: string, answers: AnyObject) {
 
   if (vueFileNameList.length === 0) {
   } else {
-    allFileList.forEach((item) => {
-      const fileDir = join(originSrcPath, item.name);
+    allFileList.forEach(async (item) => {
+      // 原src路径下的文件路径
+      const originSrcFilePath = join(originSrcPath, item.name);
+
+      // 目标路径
       const targetPath = join(
         process.cwd(),
         projectName,
-        fileDir.split(tempPath)[1]
+        originSrcFilePath.split(answers.tempPath)[1]
       );
-      const fileName = item.name.replace(extname(item.name), "");
+
+      // 不含后缀的文件名
+      const noExtfileName = item.name.replace(extname(item.name), "");
 
       // 如果是vue文件
-      if (vueFileNameList.includes(fileName)) {
+      if (vueFileNameList.includes(noExtfileName)) {
         if (extname(item.name) === ".vue") {
-          const writeVueFlag = isWriteVueFile(answers, targetPath);
-          console.log(writeVueFlag, fileName, "zlzl");
+          const reWriteVueFlag = isReWriteVueFile(answers, targetPath);
+          if (reWriteVueFlag) {
+            const convertVue = new ConvertVue({
+              path: originSrcPath,
+              fileName: noExtfileName,
+              answers,
+              model: ["hook_1"],
+            });
+            const vueFile = await convertVue.init();
+            fse.outputFileSync(targetPath, vueFile);
+          }
         }
       } else {
       }
@@ -59,7 +72,7 @@ async function handleOriginSrcDir(originSrcPath: string, answers: AnyObject) {
   }
 }
 
-function isWriteVueFile(answers: AnyObject, targetPath: string) {
+function isReWriteVueFile(answers: CliAnswers, targetPath: string) {
   const file = targetPath.substring(
     targetPath.indexOf("src"),
     targetPath.length
@@ -71,10 +84,7 @@ function isWriteVueFile(answers: AnyObject, targetPath: string) {
 
   for (const [key, value] of Object.entries(modelFile)) {
     if (!value.includes(file)) continue;
-    if (
-      typeof answers[key] === "boolean" &&
-      !answers["model"].includes("three")
-    ) {
+    if (typeof answers[key] === "boolean" && !answers[key]) {
       return false;
     }
   }
